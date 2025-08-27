@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="script.js" defer></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- <div id="time-container"></div> -->
+    <header>
+      <div id="time-container"></div>
+    </header>
+    <div id="filter-div">
+      <div class="search-div">
+        <form id="search-form">
+          <label for="search-input">Search recipes</label>
+          <input type="search" name="search" id="search-input" />
+          <button type="submit" id="search-btn">Search</button>
+        </form>
+      </div>
+      <div class="sort-div">
+        <p>Sort recipes:</p>
+        <input type="radio" name="sort" id="ascending" value="ascending" />
+        <label for="ascending">A - Z</label>
+        <input type="radio" name="sort" id="descending" value="descending" />
+        <label for="descending">Z - A</label>
+        <input type="radio" name="sort" id="by-time" value="by-time" />
+        <label for="by-time">Cooking Time</label>
+        <input
+          type="radio"
+          name="sort"
+          id="num-servings"
+          value="num-servings"
+        />
+        <label for="num-servings">Servings number</label>
+      </div>
+    </div>
+    <nav>
+      <ul>
+        <li>
+          <a id="home-link" href="">Home</a>
+        </li>
+        <li>
+          <a id="all-recipes-link" href="">All Recipes</a>
+        </li>
+        <li>
+          <a id="my-recipes-link" href="">My Recipes</a>
+        </li>
+        <li><a id="completed-recipes-link" href="">Completed Recipes</a></li>
+        <li>
+          <a id="random-recipe-link" href="">Random Recipe</a>
+        </li>
+      </ul>
+    </nav>
+    <main>
+      <section id="welcome-section" data-display="flex">
+        <div class="welcome-left">
+          <h1>Hello, Lyn!</h1>
+          <br />
+          <br />
+          <p class="welcome-p">
+            "Welcome to your personal recipe paradise! Let's get cooking and
+            make some delicious memories."
+          </p>
+          <br />
+          <br />
+        </div>
+        <div id="welcome-right">
+          <div id="dashboard-container">
+            <div id="saved-dash-container">
+              <p>Saved recipes:</p>
+              <div id="saved-dash">0</div>
+            </div>
+            <div id="completed-dash-container">
+              <p>Completed recipes:</p>
+              <div id="completed-dash">0</div>
+            </div>
+          </div>
+        </div>
+        <div class="accent-bg"></div>
+      </section>
+      <section id="full-recipes-section" data-display="block"></section>
+      <section id="all-cards-section" data-display="flex"></section>
+      <section id="my-recipe-cards-section" data-display="flex"></section>
+      <section id="completed-recipes-section" data-display="flex"></section>
+      <section id="random-recipe-section" data-display="flex"></section>
+    </main>
+  </body>
+</html>
+
+<!--showFullRecipe()  -->

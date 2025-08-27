@@ -1,0 +1,313 @@
+:root {
+  --primary-font-style: "Open Sans", sans-serif;
+  --secondary-font-style: "Bitter", serif;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+header {
+  height: 20vh;
+  flex-direction: column;
+  position: relative;
+  background-image: url("./assets/brooke-lark-08bOYnH_r_E-unsplash.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  /* height: 100%; */
+  width: 100vw;
+}
+main {
+  position: relative;
+}
+h1 {
+  font-size: 3rem;
+  font-family: var(--primary-font-style);
+}
+#time-container {
+  font-size: 1.25rem;
+  display: flex;
+  right: 1vw;
+  bottom: 1vh;
+  position: absolute;
+}
+section {
+  /* border: 0.5px solid black; */
+  margin: 0 5rem;
+  margin-top: 4vh;
+  /* height: 80vh; */
+  /* display: flex; */
+  display: none;
+  flex-direction: column;
+}
+/* article {
+  display: flex;
+  border: 0.5px solid black;
+  justify-content: space-evenly;
+  margin-top: 2vh;
+} */
+#full-recipes-section {
+  /* display: flex; */
+  /* display: none; */
+}
+#random-recipe-section {
+  /* display: none; */
+  /* display: flex; */
+  align-items: center;
+  padding-top: 7vh;
+}
+#my-recipe-cards-section {
+  /* display: flex; */
+  /* display: none; */
+}
+h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  font-family: var(--primary-font-style);
+}
+h3 {
+  font-size: 2rem;
+  font-family: var(--primary-font-style);
+}
+h4 {
+  font-size: 1.5rem;
+  font-family: var(--primary-font-style);
+}
+#filter-div {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1rem;
+}
+
+.sort-div {
+  display: flex;
+  gap: 0.5rem;
+}
+input[type="search"] {
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 250px;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.25rem;
+}
+nav ul {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+/* ul {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+} */
+nav a {
+  text-decoration: none;
+}
+
+#welcome-section {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 3rem;
+  justify-content: space-around;
+  position: relative;
+  height: 70vh;
+}
+
+main::before {
+  content: "";
+  position: fixed;
+  z-index: -1;
+  background-image: url("./assets/herbs-906140_1280.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  inset: 0;
+  opacity: 0.2;
+}
+
+.welcome-left {
+  width: 55%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 2rem;
+}
+
+.welcome-p {
+  text-align: center;
+  font-size: 2rem;
+}
+.welcome-right {
+  position: relative;
+}
+#dashboard-container {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  top: 30%;
+  position: relative;
+  background-color: beige;
+  font-size: 1.5rem;
+  transform: translateY(-50%);
+}
+#saved-dash-container * {
+  display: inline;
+  padding: 1rem;
+}
+#completed-dash-container * {
+  display: inline;
+  padding: 1rem;
+}
+
+/* .dash-info {
+  width: 50%;
+  padding: 3rem;
+  position: absolute;
+  top: 30%;
+  transform: translate(-50%);
+  border: 0.1rem solid beige;
+  background-color: beige;
+  font-size: 2rem;
+} */
+.accent-bg {
+  height: 50%;
+  width: 100%;
+  background-color: #fdc04eaa;
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.recipe-article {
+  height: 65vh;
+  display: flex;
+  border: 0.2rem solid #fdc04eaa;
+  justify-content: space-evenly;
+  margin-top: 3vh;
+  border-radius: 1rem;
+}
+.recipe-image {
+  border-radius: 1rem;
+  height: 70%;
+}
+.recipe-info-div {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+}
+.left-div {
+  display: flex;
+  /* padding: 3rem 1.5rem 3rem 3rem; */
+  padding: 1rem 1rem 1rem 2rem;
+  justify-content: center;
+  align-items: center;
+}
+.right-div {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1rem 2rem 1rem 1rem;
+  /* padding: 3rem 3rem 3rem 1.5rem; */
+}
+.delete-btn,
+.save-btn,
+.print-btn,
+.close-btn {
+  display: inline-block;
+  padding: 1rem;
+}
+
+.buttons-div {
+  display: flex;
+  gap: 2rem;
+}
+#all-cards-section,
+#my-recipe-cards-section,
+#random-recipe-section,
+#completed-recipes-section {
+  /* display: flex; */
+  /* display: none; */
+  gap: 8rem 5rem;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  /* padding-top: 7vh; */
+  padding-top: 10vh;
+}
+.recipe-card {
+  position: relative;
+  width: 300px;
+  border: 0.2rem solid #fdc04eaa;
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  transition: all 0.3s ease;
+}
+.recipe-card:hover {
+  box-shadow: 0px 4px 8px rgba(253, 192, 78, 0.2),
+    0px 8px 16px rgba(253, 192, 78, 0.4);
+}
+.recipe-card h3 {
+  text-align: center;
+  height: 70px;
+  font-size: 1.5rem;
+  padding-top: 0.25rem;
+}
+.image-card {
+  height: 200px;
+  width: 200px;
+  border-radius: 50%;
+  top: -100px;
+  position: absolute;
+  filter: drop-shadow(0px 4px 8px rgb(44, 44, 44, 0.5));
+  /* filter: drop-shadow(
+    0px 4px 8px rgb(44, 44, 44),
+    0px 8px 16px rgb(44, 44, 44)
+  ); */
+}
+.meal-info-div {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  /* gap: 1.2rem; */
+}
+#show-recipe-btn {
+  padding: 1rem;
+  border-top: 0.1rem solid #fdc04eaa;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  background-color: #fdc04eaa;
+}
+p {
+  font-family: var(--secondary-font-style);
+  color: #565656;
+}
+.meal-type {
+  background-color: #fdc04eaa;
+  padding: 0.2rem 0.5rem;
+  border-radius: 10px;
+}
+.cal-div {
+  border-right: 0.2rem solid #fdc04eaa;
+  border-left: 0.2rem solid #fdc04eaa;
+}
+.min-div,
+.serv-div,
+.cal-div {
+  /* border: 0.1rem solid #fdc04eaa; */
+  padding: 0 1rem;
+}
+.difficulty {
+  font-weight: 650;
+}
