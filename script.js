@@ -245,13 +245,17 @@ document.addEventListener("DOMContentLoaded", () => {
       (savedRecipe) => savedRecipe.name === recipe.name
     );
 
+    saveBtn.classList.add("save-btn");
+
     if (alreadySaved) {
+      saveBtn.classList.remove("save-btn");
       saveBtn.textContent = "Saved";
       saveBtn.disabled = true;
       saveBtn.classList.add("save-success");
     } else {
       saveBtn.textContent = "Save Recipe";
       saveBtn.addEventListener("click", () => {
+        saveBtn.classList.remove("save-btn");
         // this creates a new object + completed key:value
         myRecipes.push({ ...recipe, completed: false });
         saveMyRecipes();
@@ -286,15 +290,21 @@ document.addEventListener("DOMContentLoaded", () => {
       previousSectionId === "my-recipe-cards-section" ||
       previousSectionId === "completed-recipes-section"
     ) {
+      // ***
+      checkDeleteSaveDiv.style.display = "flex";
+      checkDeleteSaveDiv.style.gap = "1.5rem";
+      // ***
       checkDeleteSaveDiv.append(
-        deleteRecipeButton(recipe),
-        completedCheckbox(recipe)
+        completedCheckbox(recipe),
+        deleteRecipeButton(recipe)
       );
     } else {
       checkDeleteSaveDiv.append(saveRecipeButton(recipe));
     }
-    checkDeleteSaveDiv.style.display = "flex";
-    checkDeleteSaveDiv.style.gap = "1.5rem";
+    // ***
+    // checkDeleteSaveDiv.style.display = "flex";
+    // checkDeleteSaveDiv.style.gap = "1.5rem";
+    // ***
     return checkDeleteSaveDiv;
   };
 
@@ -345,9 +355,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // buttonsDiv.appendChild(printRecipeButton());
     // buttonsDiv.appendChild(buttonDecider(recipe));
     buttonsDiv.append(
-      closeRecipeButton(),
+      buttonDecider(recipe),
       printRecipeButton(),
-      buttonDecider(recipe)
+      closeRecipeButton()
     );
 
     ingredientsDiv.append(ingredientsTitle, ingredientsList);

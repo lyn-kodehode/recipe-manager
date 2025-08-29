@@ -211,6 +211,7 @@ main::before {
 }
 .delete-btn,
 .save-success,
+.save-btn,
 .print-btn,
 .close-btn {
   display: inline-block;
@@ -225,14 +226,24 @@ main::before {
   font-size: 1rem;
   transition: all 0.3s ease-in-out;
 }
+.save-btn:hover,
 .delete-btn:hover,
-.save-success:hover,
 .print-btn:hover,
 .close-btn:hover {
   transform: scale(1.1);
   /* background-color: #fdc04eaa; */
   background-color: #fee0a7;
   color: black;
+}
+/* .to-save-btn:hover {
+  transform: scale(1.1);
+  background-color: #fee0a7;
+  color: black;
+} */
+.save-success {
+  /* disabled */
+  background-color: #b18637;
+  color: #e6e6e6;
 }
 
 .buttons-div {
