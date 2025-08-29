@@ -225,7 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     deleteBtn.addEventListener("click", () => {
       myRecipes = myRecipes.filter(
-        (targetRecipe) => targetRecipe.name !== recipe.name
+        (savedRecipe) => savedRecipe.name !== recipe.name
       );
       saveMyRecipes();
       updateDashboard();
@@ -242,7 +242,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const saveRecipeButton = (recipe) => {
     const saveBtn = document.createElement("button");
     const alreadySaved = myRecipes.some(
-      (targetRecipe) => targetRecipe.name === recipe.name
+      (savedRecipe) => savedRecipe.name === recipe.name
     );
 
     if (alreadySaved) {
@@ -287,8 +287,8 @@ document.addEventListener("DOMContentLoaded", () => {
       previousSectionId === "completed-recipes-section"
     ) {
       checkDeleteSaveDiv.append(
-        completedCheckbox(recipe),
-        deleteRecipeButton(recipe)
+        deleteRecipeButton(recipe),
+        completedCheckbox(recipe)
       );
     } else {
       checkDeleteSaveDiv.append(saveRecipeButton(recipe));
@@ -309,6 +309,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const recipeImg = document.createElement("img");
     recipeImg.classList.add("recipe-image");
     recipeImg.src = recipe.image;
+    recipeImg.style.height = "400px";
 
     leftDiv.appendChild(recipeImg);
 
@@ -317,9 +318,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const recipeInfoDiv = document.createElement("div");
     recipeInfoDiv.classList.add("recipe-info-div");
     const ingredientsDiv = document.createElement("div");
-    rightDiv.classList.add("ingredients-div");
+    ingredientsDiv.classList.add("ingredients-div");
     const insructionsDiv = document.createElement("div");
-    rightDiv.classList.add("insructions-div");
+    insructionsDiv.classList.add("insructions-div");
 
     const recipeName = document.createElement("h3");
     recipeName.textContent = recipe.name;
@@ -340,15 +341,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const buttonsDiv = document.createElement("div");
     buttonsDiv.classList.add("buttons-div");
-    buttonsDiv.appendChild(buttonDecider(recipe));
-    buttonsDiv.appendChild(printRecipeButton());
-    buttonsDiv.appendChild(closeRecipeButton());
-
-    // buttonsDiv.append(
-    //   buttonDecider(recipe),
-    //   printRecipeButton(),
-    //   closeRecipeButton()
-    // );
+    // buttonsDiv.appendChild(closeRecipeButton());
+    // buttonsDiv.appendChild(printRecipeButton());
+    // buttonsDiv.appendChild(buttonDecider(recipe));
+    buttonsDiv.append(
+      closeRecipeButton(),
+      printRecipeButton(),
+      buttonDecider(recipe)
+    );
 
     ingredientsDiv.append(ingredientsTitle, ingredientsList);
     insructionsDiv.append(instructionsTitle, recipeInstructions);

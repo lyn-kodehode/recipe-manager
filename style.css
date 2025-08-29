@@ -8,12 +8,14 @@
   box-sizing: border-box;
 }
 header {
-  height: 20vh;
+  height: 8vh;
   flex-direction: column;
   position: relative;
-  background-image: url("./assets/brooke-lark-08bOYnH_r_E-unsplash.jpg");
+  /* background-image: url("./assets/brooke-lark-08bOYnH_r_E-unsplash.jpg"); */
+  background-image: url("./assets/istockphoto-1496386573-2048x2048.jpg");
   background-size: cover;
   background-repeat: no-repeat;
+  background-position: center;
   /* height: 100%; */
   width: 100vw;
 }
@@ -30,36 +32,24 @@ h1 {
   right: 1vw;
   bottom: 1vh;
   position: absolute;
+  font-family: var(--primary-font-style);
+  /* font-family: var(--secondary-font-style); */
+  color: #565656;
 }
 section {
-  /* border: 0.5px solid black; */
   margin: 0 5rem;
   margin-top: 4vh;
-  /* height: 80vh; */
-  /* display: flex; */
   display: none;
   flex-direction: column;
 }
-/* article {
-  display: flex;
-  border: 0.5px solid black;
-  justify-content: space-evenly;
-  margin-top: 2vh;
+/* #full-recipes-section {
 } */
-#full-recipes-section {
-  /* display: flex; */
-  /* display: none; */
-}
 #random-recipe-section {
-  /* display: none; */
-  /* display: flex; */
   align-items: center;
   padding-top: 7vh;
 }
-#my-recipe-cards-section {
-  /* display: flex; */
-  /* display: none; */
-}
+/* #my-recipe-cards-section {
+} */
 h2 {
   text-align: center;
   font-size: 2.5rem;
@@ -164,16 +154,6 @@ main::before {
   padding: 1rem;
 }
 
-/* .dash-info {
-  width: 50%;
-  padding: 3rem;
-  position: absolute;
-  top: 30%;
-  transform: translate(-50%);
-  border: 0.1rem solid beige;
-  background-color: beige;
-  font-size: 2rem;
-} */
 .accent-bg {
   height: 50%;
   width: 100%;
@@ -184,42 +164,75 @@ main::before {
   transform: translateY(-50%);
 }
 .recipe-article {
-  height: 65vh;
   display: flex;
+  flex-wrap: 1;
   border: 0.2rem solid #fdc04eaa;
-  justify-content: space-evenly;
   margin-top: 3vh;
   border-radius: 1rem;
 }
+.recipe-article ul {
+  list-style: inside;
+  font-family: var(--secondary-font-style);
+  color: #565656;
+}
 .recipe-image {
   border-radius: 1rem;
-  height: 70%;
 }
 .recipe-info-div {
   display: flex;
-  flex-direction: row;
-  gap: 2rem;
+  flex-direction: column;
+  gap: 1rem;
 }
 .left-div {
   display: flex;
-  /* padding: 3rem 1.5rem 3rem 3rem; */
-  padding: 1rem 1rem 1rem 2rem;
-  justify-content: center;
+  padding: 1rem;
   align-items: center;
 }
 .right-div {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  padding: 1rem 2rem 1rem 1rem;
-  /* padding: 3rem 3rem 3rem 1.5rem; */
+  padding: 1rem 1rem 1rem 0;
+  gap: 1rem;
+}
+.ingredients-div,
+.insructions-div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex-wrap: 1;
+}
+.ingredients-div ul {
+  font-family: var(--secondary-font-style);
+}
+
+.insructions-div p {
+  text-align: justify;
+  line-height: 1.3;
 }
 .delete-btn,
-.save-btn,
+.save-success,
 .print-btn,
 .close-btn {
   display: inline-block;
   padding: 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: #fdc04eaa;
+  /* background-color: #e4ad46; */
+  /* background-color: #fdc04e; */
+  font-family: var(--secondary-font-style);
+  color: #565656;
+  font-size: 1rem;
+  transition: all 0.3s ease-in-out;
+}
+.delete-btn:hover,
+.save-success:hover,
+.print-btn:hover,
+.close-btn:hover {
+  transform: scale(1.1);
+  /* background-color: #fdc04eaa; */
+  background-color: #fee0a7;
+  color: black;
 }
 
 .buttons-div {
@@ -230,8 +243,6 @@ main::before {
 #my-recipe-cards-section,
 #random-recipe-section,
 #completed-recipes-section {
-  /* display: flex; */
-  /* display: none; */
   gap: 8rem 5rem;
   flex-direction: row;
   flex-wrap: wrap;
@@ -251,9 +262,11 @@ main::before {
   justify-content: flex-end;
   gap: 0.5rem;
   border-radius: 1rem;
-  transition: all 0.3s ease;
+  transition: all 0.6s ease-in-out;
 }
 .recipe-card:hover {
+  transform: scale(1.1);
+  /* box-shadow: 0px 4px 8px rgba(253, 192, 78); */
   box-shadow: 0px 4px 8px rgba(253, 192, 78, 0.2),
     0px 8px 16px rgba(253, 192, 78, 0.4);
 }
@@ -279,11 +292,11 @@ main::before {
   width: 100%;
   display: flex;
   justify-content: center;
-  /* gap: 1.2rem; */
 }
 #show-recipe-btn {
   padding: 1rem;
   border-top: 0.1rem solid #fdc04eaa;
+  /* border-top: 0.1rem solid #fdc04e; */
   width: 100%;
   text-align: center;
   cursor: pointer;
