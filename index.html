@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- <script src="script.js" defer></script> -->
     <script src="script.js" defer></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,19 +15,107 @@
     />
   </head>
   <body>
-    <!-- <div id="time-container"></div> -->
     <header>
       <div id="time-container"></div>
     </header>
+    <div id="main-container">
+      <aside id="sidebar">
+        <div class="search-div">
+          <form id="search-form">
+            <label for="search-input">Search for your next meal</label>
+            <input type="search" name="search" id="search-input" />
+            <button type="submit" id="search-btn">Search</button>
+          </form>
+        </div>
+        <div class="sort-div">
+          <p>View recipes:</p>
+          <div>
+            <input type="radio" name="sort" id="ascending" value="ascending" />
+            <label for="ascending">A - Z</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              name="sort"
+              id="descending"
+              value="descending"
+            />
+            <label for="descending">Z - A</label>
+          </div>
+          <div>
+            <input type="radio" name="sort" id="by-time" value="by-time" />
+            <label for="by-time">Cooking Time</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              name="sort"
+              id="num-servings"
+              value="num-servings"
+            />
+            <label for="num-servings">Servings number</label>
+          </div>
+        </div>
+      </aside>
+      <main>
+        <nav>
+          <ul>
+            <li>
+              <a id="home-link" href="">Home</a>
+            </li>
+            <li>
+              <a id="all-recipes-link" href="">All Recipes</a>
+            </li>
+            <li>
+              <a id="my-recipes-link" href="">My Recipes</a>
+            </li>
+            <li>
+              <a id="completed-recipes-link" href="">Completed Recipes</a>
+            </li>
+            <li>
+              <a id="random-recipe-link" href="">Random Recipe</a>
+            </li>
+          </ul>
+        </nav>
+        <section id="welcome-section" data-display="flex">
+          <div class="welcome-left">
+            <h1>Hello, Lyn!</h1>
+            <p class="welcome-p">
+              "Welcome to your personal recipe paradise! Let's get cooking and
+              make some delicious memories."
+            </p>
+          </div>
+          <div id="dashboard-container">
+            <div id="saved-dash-container">
+              <p>Saved recipes:</p>
+              <div id="saved-dash">0</div>
+            </div>
+            <div id="completed-dash-container">
+              <p>Completed recipes:</p>
+              <div id="completed-dash">0</div>
+            </div>
+          </div>
+          <div class="accent-bg"></div>
+        </section>
+        <section id="full-recipes-section" data-display="block"></section>
+        <section id="all-cards-section" data-display="flex"></section>
+        <section id="my-recipe-cards-section" data-display="flex"></section>
+        <section id="completed-recipes-section" data-display="flex"></section>
+        <section id="random-recipe-section" data-display="flex"></section>
+      </main>
+    </div>
+    <!-- ******************** -->
     <div id="filter-div">
-      <div class="search-div">
+      <!-- SEARCH DIV -->
+      <!-- <div class="search-div">
         <form id="search-form">
           <label for="search-input">Search recipes</label>
           <input type="search" name="search" id="search-input" />
           <button type="submit" id="search-btn">Search</button>
         </form>
-      </div>
-      <div class="sort-div">
+      </div> -->
+      <!-- SORT DIV -->
+      <!--   <div class="sort-div">
         <p>Sort recipes:</p>
         <input type="radio" name="sort" id="ascending" value="ascending" />
         <label for="ascending">A - Z</label>
@@ -41,59 +130,10 @@
           value="num-servings"
         />
         <label for="num-servings">Servings number</label>
-      </div>
+      </div> -->
     </div>
-    <nav>
-      <ul>
-        <li>
-          <a id="home-link" href="">Home</a>
-        </li>
-        <li>
-          <a id="all-recipes-link" href="">All Recipes</a>
-        </li>
-        <li>
-          <a id="my-recipes-link" href="">My Recipes</a>
-        </li>
-        <li><a id="completed-recipes-link" href="">Completed Recipes</a></li>
-        <li>
-          <a id="random-recipe-link" href="">Random Recipe</a>
-        </li>
-      </ul>
-    </nav>
-    <main>
-      <section id="welcome-section" data-display="flex">
-        <div class="welcome-left">
-          <h1>Hello, Lyn!</h1>
-          <br />
-          <br />
-          <p class="welcome-p">
-            "Welcome to your personal recipe paradise! Let's get cooking and
-            make some delicious memories."
-          </p>
-          <br />
-          <br />
-        </div>
-        <div id="welcome-right">
-          <div id="dashboard-container">
-            <div id="saved-dash-container">
-              <p>Saved recipes:</p>
-              <div id="saved-dash">0</div>
-            </div>
-            <div id="completed-dash-container">
-              <p>Completed recipes:</p>
-              <div id="completed-dash">0</div>
-            </div>
-          </div>
-        </div>
-        <div class="accent-bg"></div>
-      </section>
-      <section id="full-recipes-section" data-display="block"></section>
-      <section id="all-cards-section" data-display="flex"></section>
-      <section id="my-recipe-cards-section" data-display="flex"></section>
-      <section id="completed-recipes-section" data-display="flex"></section>
-      <section id="random-recipe-section" data-display="flex"></section>
-    </main>
+    <!-- ******************** -->
   </body>
 </html>
 
-<!--showFullRecipe()  -->
+<!-- @P1requests -->

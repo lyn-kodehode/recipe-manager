@@ -1,8 +1,6 @@
-// DISPLAYS AND UPDATES REAL TIME
+// SHOW REAL DATE/TIME
 const showDateTime = () => {
-  // new instance of Date class
   const now = new Date();
-  // customized output
   const customDate = {
     weekday: "long",
     year: "numeric",
@@ -14,17 +12,13 @@ const showDateTime = () => {
   };
   const timeContainer = document.getElementById("time-container");
   timeContainer.textContent = now.toLocaleString("en-US", customDate);
-  // console.log(now.toLocaleString("en-US", customDate));
 };
-// updates time and date every second (1000ms)
 setInterval(showDateTime, 1000);
-// initial timeDate function call
 showDateTime();
 // **************************************************
 // DOM CONTENT LOADS
 document.addEventListener("DOMContentLoaded", () => {
   const allSections = document.querySelectorAll("section");
-  // const welcomeSection = document.getElementById("welcome-section");
   const allCardsContainer = document.getElementById("all-cards-section");
   const fullRecipesContainer = document.getElementById("full-recipes-section");
   const myRecipesContainer = document.getElementById("my-recipe-cards-section");
@@ -42,12 +36,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const radioButtons = document.querySelectorAll('input[name="sort"]');
   const searchForm = document.getElementById("search-form");
   const searchInput = document.getElementById("search-input");
-  // const dashContainer = document.getElementById("dashboard-container");
   const savedDash = document.getElementById("saved-dash");
   const completedDash = document.getElementById("completed-dash");
+  // const checkboxForm = document.getElementById("checkbox-form");
+  const APP_URL = "https://www.themealdb.com/api/json/v1/1/search.php";
 
   let allRecipes = [];
   let myRecipes = [];
+  let transformedRecipes = [];
 
   // LOAD recipes from local storage if they exist
   const storedMyRecipes = localStorage.getItem("myRecipes");
@@ -84,25 +80,56 @@ document.addEventListener("DOMContentLoaded", () => {
       // updates the currebt section
       currentSectionId = sectionId;
     }
-    console.log(`Previous page: ${previousSectionId}`);
-    console.log(`Current page: ${currentSectionId}`);
+    // console.log(`Previous page: ${previousSectionId}`);
+    // console.log(`Current page: ${currentSectionId}`);
   }
 
   // LOADS LANDING SECTION INITIALLY
   showSection("welcome-section");
-  // updateDashboard();
 
   // LOADS JSON FILE FROM LOCAL FOLDER
-  function loadJsonData() {
-    return fetch("./recipes.json")
-      .then((response) => response.json())
-      .then((data) => {
-        allRecipes = Array.isArray(data) ? data : data.recipes;
-        // saveAllrecipes();
+  /*  async function loadJsonData() {
+    try {
+      const response = await fetch("./recipes.json");
+      const data = await response.json();
+      allRecipes = Array.isArray(data) ? data : data.recipes;
+      return allRecipes;
+    } catch (error) {
+      console.error("Error loading JSON: ", error);
+      return [];
+    }
+  } */
+
+  // API request
+  const getRecipesOnline = async (searchFor) => {
+    if (!searchFor) {
+      console.error(`Search cannot be empty.`);
+      return [];
+    }
+    try {
+      const response = await fetch(`${APP_URL}?s=${searchFor}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error status: ${response.status}`);
+      }
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        allRecipes = data;
+      }
+      // empty array so code doesn't break
+      else {
+        allRecipes = data.meals;
+        if (!allRecipes.length) {
+          throw new Error("No recipes found");
+        }
+        // console.log('Recipes found:',allRecipes);
         return allRecipes;
-      })
-      .catch((error) => console.error("Error loading JSON:", error));
-  }
+      }
+    } catch (error) {
+      console.error("Error fetching recipes: ", error);
+      // always return an empty array so code doesn't break
+      return [];
+    }
+  };
 
   // DASHBOARD UPDATER
   const updateDashboard = () => {
@@ -112,11 +139,11 @@ document.addEventListener("DOMContentLoaded", () => {
     ).length;
   };
 
-  // dashboard function call
+  // dashboard initial function call
   updateDashboard();
 
-  // SEARCH INPUT FUNCTION
-  const searchRecipes = (recipesArray, searchTerm) => {
+  // SEARCH FUNCTION when using local JSON
+  /*   const searchRecipesLocal = (recipesArray, searchTerm) => {
     const lowerCaseTerm = searchTerm.toLowerCase().trim();
     return recipesArray.filter((recipe) => {
       const nameSearch = recipe.name.toLowerCase().includes(lowerCaseTerm);
@@ -131,46 +158,91 @@ document.addEventListener("DOMContentLoaded", () => {
       return nameSearch || ingredientsSearch || instructionsSearch;
       // search: cuisine[], tags[], mealType[]
     });
+  }; */
+
+  // transforms mealDB into recipes.json format
+  const transformOneRecipe = (oneRecipe) => {
+    const ingredients = [];
+    let instructions = [];
+
+    for (let i = 1; i <= 20; i++) {
+      const ingredient = oneRecipe[`strIngredient${i}`];
+      const measure = oneRecipe[`strMeasure${i}`];
+
+      // If ingredient exists AND if it has content after trimming and not just spaces
+      // ingredient.trim() !== ""
+      if (ingredient && ingredient.trim()) {
+        // measure && measure.trim() or returns empty string
+        ingredients.push(
+          `${measure?.trim() || ""} ${ingredient.trim()}`.trim()
+        );
+      }
+    }
+
+    if (oneRecipe.strInstructions) {
+      // removes "STEP" + any number + dash/colon
+      let cleanText = oneRecipe.strInstructions.replace(
+        /STEP\s*\d+\s*[-:]?\s*/gi,
+        ""
+      );
+
+      // splits by line breaks
+      // filters by length, removes short strings
+      // trims and returns trimmed array
+      instructions = cleanText
+        .split(/\r\n|\r|\n|\t/)
+        .filter((step) => step.trim().length > 5)
+        .map((step) => step.trim());
+    }
+
+    // 5min per step
+    const estimatedCookTime = instructions.length * 5;
+    // roughly from 15-120 mins per recipe
+    const cookTimeMinutes = Math.min(Math.max(estimatedCookTime, 15), 120);
+
+    return {
+      id: parseInt(oneRecipe.idMeal),
+      name: oneRecipe.strMeal,
+      ingredients: ingredients,
+      instructions: instructions,
+      cookTimeMinutes: cookTimeMinutes,
+      difficulty: "Medium",
+      mealType: [oneRecipe.strCategory],
+      caloriesPerServing: 400,
+      servings: 4,
+      cuisine: oneRecipe.strArea,
+      image: oneRecipe.strMealThumb,
+    };
   };
 
-  // SORT ALLRECIPES
-  const ascendingOrder = (recipesArray) => {
-    return [...recipesArray].sort((a, b) => a.name.localeCompare(b.name));
-  };
+  // SORT FUNCTIONS
+  const ascendingOrder = (recipesArray) =>
+    [...recipesArray].sort((a, b) => a.name.localeCompare(b.name));
 
-  const descendingOrder = (recipesArray) => {
-    return [...recipesArray].sort((a, b) => b.name.localeCompare(a.name));
-  };
+  const descendingOrder = (recipesArray) =>
+    [...recipesArray].sort((a, b) => b.name.localeCompare(a.name));
 
-  const byTime = (recipesArray) => {
-    return [...recipesArray].sort((a, b) => {
-      return a.cookTimeMinutes - b.cookTimeMinutes;
-    });
-  };
+  const byTime = (recipesArray) =>
+    [...recipesArray].sort((a, b) => a.cookTimeMinutes - b.cookTimeMinutes);
 
-  const numServings = (recipesArray) => {
-    return [...recipesArray].sort((a, b) => {
-      return a.servings - b.servings;
-    });
-  };
+  const numServings = (recipesArray) =>
+    [...recipesArray].sort((a, b) => a.servings - b.servings);
 
   // RADIO BUTTON HANDLER
   const radioSelectionHandler = (
     event,
-    targetSectionVariable,
-    sectionId,
+    targetSectionContainer,
     recipesArray
   ) => {
-    showSection(sectionId);
-    targetSectionVariable.replaceChildren();
+    targetSectionContainer.replaceChildren();
     if (event.target.value === "ascending") {
-      showAllCards(ascendingOrder(recipesArray), targetSectionVariable);
+      showAllCards(ascendingOrder(recipesArray), targetSectionContainer);
     } else if (event.target.value === "descending") {
-      showAllCards(descendingOrder(recipesArray), targetSectionVariable);
+      showAllCards(descendingOrder(recipesArray), targetSectionContainer);
     } else if (event.target.value === "by-time") {
-      showAllCards(byTime(recipesArray), targetSectionVariable);
+      showAllCards(byTime(recipesArray), targetSectionContainer);
     } else if (event.target.value === "num-servings") {
-      showAllCards(numServings(recipesArray), targetSectionVariable);
+      showAllCards(numServings(recipesArray), targetSectionContainer);
     } else {
       return;
     }
@@ -181,15 +253,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return recipes[Math.floor(Math.random() * recipes.length)];
   };
 
-  // RANDOM RECIPE SECTION
-  // DISPLAYS A RANDOM FULL RECIPE
-  const showRandomRecipe = (recipes) => {
-    randomRecipeContainer.replaceChildren();
-    const randomRecipe = randomizer(recipes);
-    randomRecipeContainer.appendChild(createRecipeCard(randomRecipe));
-  };
-
-  // THERE IS A BUG IN THIS BUTTON --fixed :)
   // CLOSE RECIPE BUTTON
   const closeRecipeButton = () => {
     const closeBtn = document.createElement("button");
@@ -301,10 +364,6 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       checkDeleteSaveDiv.append(saveRecipeButton(recipe));
     }
-    // ***
-    // checkDeleteSaveDiv.style.display = "flex";
-    // checkDeleteSaveDiv.style.gap = "1.5rem";
-    // ***
     return checkDeleteSaveDiv;
   };
 
@@ -320,7 +379,6 @@ document.addEventListener("DOMContentLoaded", () => {
     recipeImg.classList.add("recipe-image");
     recipeImg.src = recipe.image;
     recipeImg.style.height = "400px";
-
     leftDiv.appendChild(recipeImg);
 
     const rightDiv = document.createElement("div");
@@ -351,9 +409,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const buttonsDiv = document.createElement("div");
     buttonsDiv.classList.add("buttons-div");
-    // buttonsDiv.appendChild(closeRecipeButton());
-    // buttonsDiv.appendChild(printRecipeButton());
-    // buttonsDiv.appendChild(buttonDecider(recipe));
     buttonsDiv.append(
       buttonDecider(recipe),
       printRecipeButton(),
@@ -375,6 +430,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const recipeCard = document.createElement("article");
     recipeCard.classList.add("recipe-card");
     const imgCard = document.createElement("img");
+    imgCard.loading = "lazy";
     imgCard.classList.add("image-card");
     imgCard.src = recipe.image;
     const nameCard = document.createElement("h3");
@@ -429,118 +485,150 @@ document.addEventListener("DOMContentLoaded", () => {
       difficultyLevel,
       mealTypeCard,
       mealInfoDiv,
-      // buttonDecider(),
       showRecipeBtn
     );
-    // currentPage.append(recipeCard);
+    console.log(recipe.image);
     return recipeCard;
   };
 
   // ALL CARDS SECTION
   // DISPLAYS ALL RECIPE CARDS
-  const showAllCards = (recipesArray, targetSectionVariable) => {
-    targetSectionVariable.replaceChildren();
-    // currentPage.replaceChildren();
+  const showAllCards = (recipesArray, targetSectionContainer) => {
+    targetSectionContainer.replaceChildren();
     recipesArray.forEach((recipe) => {
-      targetSectionVariable.appendChild(createRecipeCard(recipe));
+      targetSectionContainer.appendChild(createRecipeCard(recipe));
     });
   };
 
   // MAIN PROGRAM AFTER JSON LOADS
-  loadJsonData().then((allRecipes) => {
-    // loadJsonData().then(() => {
-    homeLink.addEventListener("click", function (event) {
-      event.preventDefault();
-      showSection("welcome-section");
-      // updateDashboard();
-    });
+  const mainProgram = async () => {
+    try {
+      allRecipes = await getRecipesOnline();
 
-    allRecipesLink.addEventListener("click", function (event) {
-      event.preventDefault();
-      showSection("all-cards-section");
-      // (array, sectionVariable)
-      showAllCards(allRecipes, allCardsContainer);
-    });
+      // SEARCH event
+      searchForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        showSection("all-cards-section");
+        const searchTerm = searchInput.value.trim();
 
-    randomRecipeLink.addEventListener("click", function (event) {
-      event.preventDefault();
-      showSection("random-recipe-section");
-      // (array, sectionVariable)
-      showRandomRecipe(allRecipes, randomRecipeContainer);
-      // showAllCards([randomizer(allRecipes)], randomRecipeContainer);
-    });
+        // if (!searchTerm) return;
+        if (!searchTerm) {
+          allCardsContainer.textContent = `Search cannot be empty.`;
+          return;
+        }
 
-    myRecipesLink.addEventListener("click", (event) => {
-      event.preventDefault();
-      showSection("my-recipe-cards-section");
-      // (array, sectionVariable)
+        allCardsContainer.textContent = `Searching online for ${searchTerm} recipes`;
 
-      const incompleteRecipes = myRecipes.filter((recipe) => !recipe.completed);
-      showAllCards(incompleteRecipes, myRecipesContainer);
+        try {
+          allRecipes = await getRecipesOnline(searchTerm);
+          transformedRecipes = allRecipes.map((oneRecipe) =>
+            transformOneRecipe(oneRecipe)
+          );
+          // console.log(`MealDBRecipes transformed: `, transformedRecipes);
+          showSection("all-cards-section");
+          if (transformedRecipes.length > 0) {
+            showAllCards(transformedRecipes, allCardsContainer);
+          } else {
+            allCardsContainer.textContent = `No recipes found for ${searchTerm}. Try searching chicken, pasta...`;
+          }
+        } catch (error) {
+          console.error("Search failed: ", error);
+          allCardsContainer.textContent = `Search failed. Please try again.`;
+        }
 
-      // showAllCards(myRecipes, myRecipesContainer);
-      if (myRecipes.length === 0) {
-        myRecipesContainer.textContent = "No recipes saved";
-      }
-      console.log(myRecipes);
-    });
-
-    completedLink.addEventListener("click", (event) => {
-      event.preventDefault();
-      showSection("completed-recipes-section");
-
-      const completedRecipes = myRecipes.filter((recipe) => recipe.completed);
-      showAllCards(completedRecipes, completedRecipesContainer);
-
-      // savedDash.textContent = myRecipes.length;
-      //     completedDash.textContent = myRecipes.filter(
-      //       (recipe) => recipe.completed
-      //     ).length;
-    });
-
-    radioButtons.forEach((radio) => {
-      // radio.addEventListener("change", radioSelectionHandler);
-      radio.addEventListener("change", () => {
-        /*   if (currentSectionId === 'all-cards-section'){
-        } else{
-
+        // SEARCH using local JSON
+        /* const searchResults = searchRecipesLocal(allRecipes, searchTerm);
+        allCardsContainer.replaceChildren();
+        if (searchResults.length > 0) {
+          showAllCards(searchResults, allCardsContainer);
+        } else {
+          allCardsContainer.textContent = `No recipes found for ${searchTerm}`;
         } */
-        radioSelectionHandler(
-          event,
-          allCardsContainer,
-          currentSectionId,
-          allRecipes
-        );
-        radioSelectionHandler(
-          event,
-          myRecipesContainer,
-          currentSectionId,
-          myRecipes
-        );
       });
-    });
 
-    // button type=submit
-    searchForm.addEventListener("submit", (event) => {
-      event.preventDefault();
-      showSection("all-cards-section");
-      const searchTerm = searchInput.value;
-      // console.log(`You typed: ${searchTerm}`);
+      // HOME link
+      homeLink.addEventListener("click", function (event) {
+        event.preventDefault();
+        showSection("welcome-section");
+      });
 
-      if (!searchTerm) return;
+      // ALL RECIPES link
+      allRecipesLink.addEventListener("click", function (event) {
+        event.preventDefault();
+        showSection("all-cards-section");
 
-      const searchResults = searchRecipes(allRecipes, searchTerm);
+        // showAllCards(allRecipes, allCardsContainer);
+        showAllCards(transformedRecipes, allCardsContainer);
+        if (transformedRecipes.length === 0) {
+          allCardsContainer.textContent = "Discover recipes by searching.";
+        }
+      });
 
-      allCardsContainer.replaceChildren();
-      if (searchResults.length > 0) {
-        showAllCards(searchResults, allCardsContainer);
-      } else {
-        allCardsContainer.textContent = `No recipes found for ${searchTerm}`;
-      }
+      // RANDOM RECIPE link
+      randomRecipeLink.addEventListener("click", function (event) {
+        event.preventDefault();
+        showSection("random-recipe-section");
+        // showRandomRecipe(allRecipes, randomRecipeContainer);
+        // showAllCards([randomizer(allRecipes)], randomRecipeContainer);
+        showAllCards([randomizer(transformedRecipes)], randomRecipeContainer);
+      });
 
-      console.log(searchResults);
-    });
+      // MY RECIPES link
+      myRecipesLink.addEventListener("click", (event) => {
+        event.preventDefault();
+        showSection("my-recipe-cards-section");
+        // (array, sectionVariable)
 
-    // console.log(allRecipes);
-  });
+        const incompleteRecipes = myRecipes.filter(
+          (recipe) => !recipe.completed
+        );
+
+        showAllCards(incompleteRecipes, myRecipesContainer);
+        if (incompleteRecipes.length === 0) {
+          myRecipesContainer.textContent = "Check your completed recipes.";
+        }
+        if (myRecipes.length === 0) {
+          myRecipesContainer.textContent = "No recipes saved";
+        }
+        // console.log(myRecipes);
+      });
+
+      // COMPLETED RECIPES link
+      completedLink.addEventListener("click", (event) => {
+        event.preventDefault();
+        showSection("completed-recipes-section");
+
+        const completedRecipes = myRecipes.filter((recipe) => recipe.completed);
+
+        showAllCards(completedRecipes, completedRecipesContainer);
+        if (completedRecipes.length === 0) {
+          completedRecipesContainer.textContent = "No recipes completed.";
+        }
+      });
+
+      // RADIO BUTTONS event
+      radioButtons.forEach((radio) => {
+        radio.addEventListener("change", (event) => {
+          if (currentSectionId === "all-cards-section") {
+            // recipesArray = allRecipes;
+            recipesArray = transformedRecipes;
+            targetSectionContainer = allCardsContainer;
+            radioSelectionHandler(event, targetSectionContainer, recipesArray);
+          } else if (currentSectionId === "completed-recipes-section") {
+            recipesArray = myRecipes.filter((recipe) => recipe.completed);
+            targetSectionContainer = completedRecipesContainer;
+            radioSelectionHandler(event, targetSectionContainer, recipesArray);
+          } else if (currentSectionId === "my-recipe-cards-section") {
+            recipesArray = myRecipes.filter((recipe) => !recipe.completed);
+            targetSectionContainer = myRecipesContainer;
+            radioSelectionHandler(event, targetSectionContainer, recipesArray);
+          }
+        });
+      });
+    } catch (error) {
+      console.error("Failed to run the program: ", error);
+    }
+  };
+
+  mainProgram();
 });
