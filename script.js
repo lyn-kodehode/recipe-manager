@@ -38,6 +38,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("search-input");
   const savedDash = document.getElementById("saved-dash");
   const completedDash = document.getElementById("completed-dash");
+  // const rangeSliders = document.querySelectorAll('input[type="range]');
+  const calorieSlider = document.getElementById("calorie-range");
+  const calorieLabel = document.querySelector("label[for='calorie-range']");
+  const cooktimeSlider = document.getElementById("cooktime-range");
+  const cooktimeLabel = document.querySelector("label[for='cooktime-range']");
+  const rangeSliders = document.querySelectorAll('input[type="range"]');
   // const checkboxForm = document.getElementById("checkbox-form");
   const APP_URL = "https://www.themealdb.com/api/json/v1/1/search.php";
 
@@ -622,6 +628,63 @@ document.addEventListener("DOMContentLoaded", () => {
             recipesArray = myRecipes.filter((recipe) => !recipe.completed);
             targetSectionContainer = myRecipesContainer;
             radioSelectionHandler(event, targetSectionContainer, recipesArray);
+          }
+        });
+      });
+
+      // calorie slider
+      /*    const currentValue = calorieSlider.value;
+      console.log(currentValue);
+      calorieSlider.addEventListener("input", (event) => {
+        event.preventDefault();
+        const newValue = calorieSlider.value;
+        // console.log(newValue);
+        const withinCalories = myRecipes
+          .filter((recipe) => !recipe.completed)
+          .filter((recipe) => recipe.caloriesPerServing <= newValue);
+        calorieLabel.textContent = `Calories (${newValue}):`;
+        console.log(withinCalories);
+      }); */
+
+      // cooktimeSlider.addEventListener("input", (event) => {
+      //   event.preventDefault();
+      //   // cooktimeSlider
+      //   // cooktimeLabel.textContent = `Cooking times in (${minutes}) mins:`;
+      //   console.log(event.target);
+      // });
+
+      // all sliders
+      // works only on myRecipes Section
+      rangeSliders.forEach((slider) => {
+        slider.addEventListener("input", (event) => {
+          event.preventDefault();
+          // console.log(event.target.id);
+          if (event.target.id === "calorie-range") {
+            // console.log("this is calorie range");
+            // const currentValue = calorieSlider.value;
+            // console.log(currentValue);
+            const newValue = calorieSlider.value;
+            // console.log(newValue);
+            const withinCalories = myRecipes
+              .filter((recipe) => !recipe.completed)
+              .filter((recipe) => recipe.caloriesPerServing <= newValue);
+            calorieLabel.textContent = `Calories (${newValue}):`;
+            // console.log(withinCalories);
+            showAllCards(withinCalories, myRecipesContainer);
+          }
+          // (event.target.id === 'cooktime-range')
+          else {
+            // console.log("this is cooking time range");
+            // const currentValue = cooktimeSlider.value;
+            // console.log(currentValue);
+            const newValue = cooktimeSlider.value;
+            cooktimeLabel.textContent = `Cooking times in (${newValue}) mins:`;
+            const withinMinutes = myRecipes
+              .filter((recipe) => !recipe.completed)
+              .filter((recipe) => recipe.cookTimeMinutes <= newValue);
+            calorieLabel.textContent = `Calories (${newValue}):`;
+            // console.log(withinMinutes);
+            showAllCards(withinMinutes, myRecipesContainer);
           }
         });
       });

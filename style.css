@@ -341,3 +341,6 @@ p {
 .difficulty {
   font-weight: 650;
 }
+.range-div * {
+  display: block;
+}
