@@ -63,8 +63,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let myRecipes = loadMyData();
   let allRecipes = [];
-  let completedRecipes = filterCompleted(myRecipes);
-  let incompleteRecipes = filterIncomplete(myRecipes);
+  let completedRecipes = [];
+  let incompleteRecipes = [];
+  // let completedRecipes = filterCompleted(myRecipes);
+  // let incompleteRecipes = filterIncomplete(myRecipes);
 
   // SECTION TRACKER FUNCTION
   let currentSectionId = "welcome-section";
@@ -374,6 +376,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // MAIN PROGRAM AFTER JSON LOADS
   const mainProgram = async () => {
+    // completedRecipes = filterCompleted(myRecipes);
+    // incompleteRecipes = filterIncomplete(myRecipes);
     let localRecipes = [];
 
     // loads local json data
@@ -488,6 +492,7 @@ document.addEventListener("DOMContentLoaded", () => {
     myRecipesLink.addEventListener("click", (event) => {
       event.preventDefault();
       showSection("my-recipe-cards-section");
+      incompleteRecipes = filterIncomplete(myRecipes);
       showAllCards(incompleteRecipes, myRecipesContainer);
 
       if (incompleteRecipes.length === 0) {
@@ -502,6 +507,7 @@ document.addEventListener("DOMContentLoaded", () => {
     completedLink.addEventListener("click", (event) => {
       event.preventDefault();
       showSection("completed-recipes-section");
+      completedRecipes = filterCompleted(myRecipes);
       showAllCards(completedRecipes, completedRecipesContainer);
 
       if (completedRecipes.length === 0) {
@@ -512,6 +518,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // RADIO BUTTONS event
     radioButtons.forEach((radio) => {
       radio.addEventListener("change", (event) => {
+        completedRecipes = filterCompleted(myRecipes);
+        incompleteRecipes = filterIncomplete(myRecipes);
         if (currentSectionId === "all-cards-section") {
           radioSelectionHandler(event, allCardsContainer, allRecipes);
         } else if (currentSectionId === "completed-recipes-section") {
@@ -542,6 +550,7 @@ document.addEventListener("DOMContentLoaded", () => {
           );
           showAllCards(withinCaloriesAndTime, allCardsContainer);
         } else if (currentSectionId === "my-recipe-cards-section") {
+          incompleteRecipes = filterIncomplete(myRecipes);
           const withinCaloriesAndTime = filterByCaloriesAndTime(
             incompleteRecipes,
             calorieValue,
@@ -549,6 +558,7 @@ document.addEventListener("DOMContentLoaded", () => {
           );
           showAllCards(withinCaloriesAndTime, myRecipesContainer);
         } else {
+          completedRecipes = filterCompleted(myRecipes);
           const withinCaloriesAndTime = filterByCaloriesAndTime(
             completedRecipes,
             calorieValue,
