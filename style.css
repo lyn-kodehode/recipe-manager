@@ -110,7 +110,7 @@ aside {
   display: flex;
   flex-direction: column;
   /* gap: 2rem; */
-  position: sticky;
+  /* position: sticky; */
 }
 aside * {
   /* border: solid black 0.01rem; */
