@@ -9,8 +9,10 @@
     <link rel="stylesheet" href="style.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
       rel="stylesheet"
     />
   </head>
@@ -20,50 +22,68 @@
     </header>
     <div id="main-container">
       <aside id="sidebar">
-        <div class="search-div">
-          <form id="search-form">
-            <label for="search-input">Search for your next meal</label>
-            <input type="search" name="search" id="search-input" />
-            <button type="submit" id="search-btn">Search</button>
-          </form>
-        </div>
-        <div class="sort-div">
-          <p>View recipes:</p>
-          <div>
-            <input type="radio" name="sort" id="ascending" value="ascending" />
-            <label for="ascending">A - Z</label>
-          </div>
-          <div>
-            <input
-              type="radio"
-              name="sort"
-              id="descending"
-              value="descending"
+        <div class="logo-div">
+          <h1 class="logo">
+            Recipe Manager
+            <img
+              class="logo-icon"
+              src="./assets/chef.png"
+              alt="chef's hat icon"
             />
-            <label for="descending">Z - A</label>
-          </div>
+          </h1>
+          <!-- <img src="./assets/chef.png" alt="chef's hat icon" /> -->
         </div>
-        <div class="range-div">
-          <label for="calorie-range">Calories (100): </label>
-          <input
-            type="range"
-            name="calorie-range"
-            id="calorie-range"
-            min="0"
-            max="600"
-            value="100"
-            step="10"
-          />
-          <label for="cooktime-range">Cooking times in (0) mins: </label>
-          <input
-            type="range"
-            name="cooktime-range"
-            id="cooktime-range"
-            min="0"
-            max="120"
-            value="0"
-            step="1"
-          />
+        <div class="filter-container">
+          <div class="search-div">
+            <form id="search-form">
+              <label for="search-input">Search for your next meal</label>
+              <input type="search" name="search" id="search-input" />
+              <button type="submit" id="search-btn">Search</button>
+            </form>
+          </div>
+          <div class="sort-div">
+            <p>View recipes:</p>
+            <div>
+              <input
+                type="radio"
+                name="sort"
+                id="ascending"
+                value="ascending"
+              />
+              <label for="ascending">A - Z</label>
+            </div>
+            <div>
+              <input
+                type="radio"
+                name="sort"
+                id="descending"
+                value="descending"
+              />
+              <label for="descending">Z - A</label>
+            </div>
+          </div>
+          <div class="range-div">
+            <label for="calorie-range">Calories (100): </label>
+            <input
+              type="range"
+              name="calorie-range"
+              id="calorie-range"
+              min="0"
+              max="600"
+              value="100"
+              step="10"
+            />
+            <label for="cooktime-range">Cooking times in (0) mins: </label>
+            <input
+              type="range"
+              name="cooktime-range"
+              id="cooktime-range"
+              min="0"
+              max="120"
+              value="0"
+              step="1"
+            />
+          </div>
         </div>
       </aside>
       <main>
