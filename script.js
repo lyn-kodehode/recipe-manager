@@ -1,3 +1,20 @@
+// IMPORTS
+import {
+  loadLocalData,
+  searchRecipesLocal,
+} from "./modules/localDataService.js";
+import {
+  randomizer,
+  ascendingOrder,
+  descendingOrder,
+  filterCompleted,
+  filterIncomplete,
+  filterByCaloriesAndTime,
+} from "./modules/recipeUtilities.js";
+import { loadMyData, saveMyRecipes } from "./modules/storageService.js";
+import { getRecipesOnline, transformRecipes } from "./modules/apiService.js";
+
+// **************************************************
 // SHOW REAL DATE/TIME
 const showDateTime = () => {
   const now = new Date();
@@ -38,36 +55,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("search-input");
   const savedDash = document.getElementById("saved-dash");
   const completedDash = document.getElementById("completed-dash");
-  // const rangeSliders = document.querySelectorAll('input[type="range]');
   const calorieSlider = document.getElementById("calorie-range");
   const calorieLabel = document.querySelector("label[for='calorie-range']");
   const cooktimeSlider = document.getElementById("cooktime-range");
   const cooktimeLabel = document.querySelector("label[for='cooktime-range']");
   const rangeSliders = document.querySelectorAll('input[type="range"]');
-  // const checkboxForm = document.getElementById("checkbox-form");
-  const APP_URL = "https://www.themealdb.com/api/json/v1/1/search.php";
 
+  let myRecipes = loadMyData();
   let allRecipes = [];
-  let myRecipes = [];
-  let transformedRecipes = [];
-
-  // LOAD recipes from local storage if they exist
-  const storedMyRecipes = localStorage.getItem("myRecipes");
-  if (storedMyRecipes) {
-    myRecipes = JSON.parse(storedMyRecipes);
-  }
-  /* const storedAllRecipes = localStorage.getItem("allRecipes");
-  if (storedAllRecipes) {
-    allRecipes = JSON.parse(storedAllRecipes);
-  } */
-
-  // SAVES TO LOCAL STORAGE
-  const saveMyRecipes = () => {
-    localStorage.setItem("myRecipes", JSON.stringify(myRecipes));
-  };
-  /*   const saveAllrecipes = () => {
-    localStorage.setItem("allRecipes", JSON.stringify(allRecipes));
-  }; */
+  let completedRecipes = filterCompleted(myRecipes);
+  let incompleteRecipes = filterIncomplete(myRecipes);
 
   // SECTION TRACKER FUNCTION
   let currentSectionId = "welcome-section";
@@ -86,153 +83,21 @@ document.addEventListener("DOMContentLoaded", () => {
       // updates the currebt section
       currentSectionId = sectionId;
     }
-    // console.log(`Previous page: ${previousSectionId}`);
-    // console.log(`Current page: ${currentSectionId}`);
+    console.log(`Previous page: ${previousSectionId}`);
+    console.log(`Current page: ${currentSectionId}`);
   }
 
   // LOADS LANDING SECTION INITIALLY
   showSection("welcome-section");
 
-  // LOADS JSON FILE FROM LOCAL FOLDER
-  /*  async function loadJsonData() {
-    try {
-      const response = await fetch("./recipes.json");
-      const data = await response.json();
-      allRecipes = Array.isArray(data) ? data : data.recipes;
-      return allRecipes;
-    } catch (error) {
-      console.error("Error loading JSON: ", error);
-      return [];
-    }
-  } */
-
-  // API request
-  const getRecipesOnline = async (searchFor) => {
-    if (!searchFor) {
-      console.error(`Search cannot be empty.`);
-      return [];
-    }
-    try {
-      const response = await fetch(`${APP_URL}?s=${searchFor}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error status: ${response.status}`);
-      }
-      const data = await response.json();
-      if (Array.isArray(data)) {
-        allRecipes = data;
-      }
-      // empty array so code doesn't break
-      else {
-        allRecipes = data.meals;
-        if (!allRecipes.length) {
-          throw new Error("No recipes found");
-        }
-        // console.log('Recipes found:',allRecipes);
-        return allRecipes;
-      }
-    } catch (error) {
-      console.error("Error fetching recipes: ", error);
-      // always return an empty array so code doesn't break
-      return [];
-    }
-  };
-
   // DASHBOARD UPDATER
   const updateDashboard = () => {
     savedDash.textContent = myRecipes.length;
-    completedDash.textContent = myRecipes.filter(
-      (recipe) => recipe.completed
-    ).length;
+    completedDash.textContent = filterCompleted(myRecipes).length;
   };
 
   // dashboard initial function call
   updateDashboard();
-
-  // SEARCH FUNCTION when using local JSON
-  /*   const searchRecipesLocal = (recipesArray, searchTerm) => {
-    const lowerCaseTerm = searchTerm.toLowerCase().trim();
-    return recipesArray.filter((recipe) => {
-      const nameSearch = recipe.name.toLowerCase().includes(lowerCaseTerm);
-      const ingredientsSearch = recipe.ingredients
-        .join(" ")
-        .toLowerCase()
-        .includes(lowerCaseTerm);
-      const instructionsSearch = recipe.instructions
-        .join(" ")
-        .toLowerCase()
-        .includes(lowerCaseTerm);
-      return nameSearch || ingredientsSearch || instructionsSearch;
-      // search: cuisine[], tags[], mealType[]
-    });
-  }; */
-
-  // transforms mealDB into recipes.json format
-  const transformOneRecipe = (oneRecipe) => {
-    const ingredients = [];
-    let instructions = [];
-
-    for (let i = 1; i <= 20; i++) {
-      const ingredient = oneRecipe[`strIngredient${i}`];
-      const measure = oneRecipe[`strMeasure${i}`];
-
-      // If ingredient exists AND if it has content after trimming and not just spaces
-      // ingredient.trim() !== ""
-      if (ingredient && ingredient.trim()) {
-        // measure && measure.trim() or returns empty string
-        ingredients.push(
-          `${measure?.trim() || ""} ${ingredient.trim()}`.trim()
-        );
-      }
-    }
-
-    if (oneRecipe.strInstructions) {
-      // removes "STEP" + any number + dash/colon
-      let cleanText = oneRecipe.strInstructions.replace(
-        /STEP\s*\d+\s*[-:]?\s*/gi,
-        ""
-      );
-
-      // splits by line breaks
-      // filters by length, removes short strings
-      // trims and returns trimmed array
-      instructions = cleanText
-        .split(/\r\n|\r|\n|\t/)
-        .filter((step) => step.trim().length > 5)
-        .map((step) => step.trim());
-    }
-
-    // 5min per step
-    const estimatedCookTime = instructions.length * 5;
-    // roughly from 15-120 mins per recipe
-    const cookTimeMinutes = Math.min(Math.max(estimatedCookTime, 15), 120);
-
-    return {
-      id: parseInt(oneRecipe.idMeal),
-      name: oneRecipe.strMeal,
-      ingredients: ingredients,
-      instructions: instructions,
-      cookTimeMinutes: cookTimeMinutes,
-      difficulty: "Medium",
-      mealType: [oneRecipe.strCategory],
-      caloriesPerServing: 400,
-      servings: 4,
-      cuisine: oneRecipe.strArea,
-      image: oneRecipe.strMealThumb,
-    };
-  };
-
-  // SORT FUNCTIONS
-  const ascendingOrder = (recipesArray) =>
-    [...recipesArray].sort((a, b) => a.name.localeCompare(b.name));
-
-  const descendingOrder = (recipesArray) =>
-    [...recipesArray].sort((a, b) => b.name.localeCompare(a.name));
-
-  const byTime = (recipesArray) =>
-    [...recipesArray].sort((a, b) => a.cookTimeMinutes - b.cookTimeMinutes);
-
-  const numServings = (recipesArray) =>
-    [...recipesArray].sort((a, b) => a.servings - b.servings);
 
   // RADIO BUTTON HANDLER
   const radioSelectionHandler = (
@@ -252,11 +117,6 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       return;
     }
-  };
-
-  // RANDOMIZER
-  const randomizer = (recipes) => {
-    return recipes[Math.floor(Math.random() * recipes.length)];
   };
 
   // CLOSE RECIPE BUTTON
@@ -296,7 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
       myRecipes = myRecipes.filter(
         (savedRecipe) => savedRecipe.name !== recipe.name
       );
-      saveMyRecipes();
+      saveMyRecipes(myRecipes);
       updateDashboard();
       showAllCards(myRecipes, myRecipesContainer);
       if (myRecipes.length === 0) {
@@ -327,7 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
         saveBtn.classList.remove("save-btn");
         // this creates a new object + completed key:value
         myRecipes.push({ ...recipe, completed: false });
-        saveMyRecipes();
+        saveMyRecipes(myRecipes);
         updateDashboard();
         saveBtn.textContent = "Saved";
         saveBtn.disabled = true;
@@ -345,7 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
     checkbox.checked = recipe.completed;
     checkbox.addEventListener("change", () => {
       recipe.completed = checkbox.checked;
-      saveMyRecipes();
+      saveMyRecipes(myRecipes);
       updateDashboard();
     });
     return checkbox;
@@ -372,6 +232,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     return checkDeleteSaveDiv;
   };
+
+  console.log("Functions check:", {
+    saveMyRecipes: typeof saveMyRecipes,
+    updateDashboard: typeof updateDashboard,
+    completedCheckbox: typeof completedCheckbox,
+  });
 
   // CREATES A FULL RECIPE ARTICLE
   const createFullRecipe = (recipe) => {
@@ -508,189 +374,191 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // MAIN PROGRAM AFTER JSON LOADS
   const mainProgram = async () => {
+    let localRecipes = [];
+
+    // loads local json data
     try {
-      allRecipes = await getRecipesOnline();
+      localRecipes = await loadLocalData();
+      console.log("Loaded local recipes:", localRecipes.length);
+      console.log("First local recipe:", localRecipes[0]);
 
-      // SEARCH event
-      searchForm.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        showSection("all-cards-section");
-        const searchTerm = searchInput.value.trim();
+      // copies local data to allRecipes array for initial data loading
+      allRecipes = [...localRecipes];
+      // console.log("allRecipes after initialization:", allRecipes.length);
+    } catch (error) {
+      console.error("Failed to load local recipes:", error);
+    }
 
-        // if (!searchTerm) return;
-        if (!searchTerm) {
-          allCardsContainer.textContent = `Search cannot be empty.`;
-          return;
-        }
+    // fetches api data first then local json data if not permitted
+    const searchHandler = async (searchTerm) => {
+      // searches local recipes for the search term
+      const localResults = searchRecipesLocal(localRecipes, searchTerm);
+      console.log(`Local "${searchTerm}" results:`, localResults.length);
 
-        allCardsContainer.textContent = `Searching online for ${searchTerm} recipes`;
-
-        try {
-          allRecipes = await getRecipesOnline(searchTerm);
-          transformedRecipes = allRecipes.map((oneRecipe) =>
-            transformOneRecipe(oneRecipe)
-          );
-          // console.log(`MealDBRecipes transformed: `, transformedRecipes);
-          showSection("all-cards-section");
-          if (transformedRecipes.length > 0) {
-            showAllCards(transformedRecipes, allCardsContainer);
-          } else {
-            allCardsContainer.textContent = `No recipes found for ${searchTerm}. Try searching chicken, pasta...`;
-          }
-        } catch (error) {
-          console.error("Search failed: ", error);
-          allCardsContainer.textContent = `Search failed. Please try again.`;
-        }
-
-        // SEARCH using local JSON
-        /* const searchResults = searchRecipesLocal(allRecipes, searchTerm);
-        allCardsContainer.replaceChildren();
-        if (searchResults.length > 0) {
-          showAllCards(searchResults, allCardsContainer);
-        } else {
-          allCardsContainer.textContent = `No recipes found for ${searchTerm}`;
-        } */
-      });
-
-      // HOME link
-      homeLink.addEventListener("click", function (event) {
-        event.preventDefault();
-        showSection("welcome-section");
-      });
-
-      // ALL RECIPES link
-      allRecipesLink.addEventListener("click", function (event) {
-        event.preventDefault();
-        showSection("all-cards-section");
-
-        // showAllCards(allRecipes, allCardsContainer);
-        showAllCards(transformedRecipes, allCardsContainer);
-        if (transformedRecipes.length === 0) {
-          allCardsContainer.textContent = "Discover recipes by searching.";
-        }
-      });
-
-      // RANDOM RECIPE link
-      randomRecipeLink.addEventListener("click", function (event) {
-        event.preventDefault();
-        showSection("random-recipe-section");
-        // showRandomRecipe(allRecipes, randomRecipeContainer);
-        // showAllCards([randomizer(allRecipes)], randomRecipeContainer);
-        showAllCards([randomizer(transformedRecipes)], randomRecipeContainer);
-      });
-
-      // MY RECIPES link
-      myRecipesLink.addEventListener("click", (event) => {
-        event.preventDefault();
-        showSection("my-recipe-cards-section");
-        // (array, sectionVariable)
-
-        const incompleteRecipes = myRecipes.filter(
-          (recipe) => !recipe.completed
+      try {
+        // gets online recipes for the search term
+        const onlineRecipes = await getRecipesOnline(searchTerm);
+        console.log(
+          `Raw online "${searchTerm}" results:`,
+          onlineRecipes.length
         );
 
-        showAllCards(incompleteRecipes, myRecipesContainer);
-        if (incompleteRecipes.length === 0) {
-          myRecipesContainer.textContent = "Check your completed recipes.";
-        }
-        if (myRecipes.length === 0) {
-          myRecipesContainer.textContent = "No recipes saved";
-        }
-        // console.log(myRecipes);
-      });
+        // transforms online results to match local data
+        const transformedOnlineRecipes = transformRecipes(onlineRecipes);
+        console.log(
+          `Transformed online results:`,
+          transformedOnlineRecipes.length
+        );
 
-      // COMPLETED RECIPES link
-      completedLink.addEventListener("click", (event) => {
-        event.preventDefault();
-        showSection("completed-recipes-section");
+        // pulls results after lcoal data search
+        allRecipes = [...localResults];
 
-        const completedRecipes = myRecipes.filter((recipe) => recipe.completed);
+        // loops through transformed online recipes if it exists or not
+        transformedOnlineRecipes.forEach((onlineRecipe) => {
+          const recipeExists = allRecipes.some(
+            (localRecipe) =>
+              localRecipe.name.toLowerCase() === onlineRecipe.name.toLowerCase()
+          );
 
-        showAllCards(completedRecipes, completedRecipesContainer);
-        if (completedRecipes.length === 0) {
-          completedRecipesContainer.textContent = "No recipes completed.";
-        }
-      });
-
-      // RADIO BUTTONS event
-      radioButtons.forEach((radio) => {
-        radio.addEventListener("change", (event) => {
-          if (currentSectionId === "all-cards-section") {
-            // recipesArray = allRecipes;
-            recipesArray = transformedRecipes;
-            targetSectionContainer = allCardsContainer;
-            radioSelectionHandler(event, targetSectionContainer, recipesArray);
-          } else if (currentSectionId === "completed-recipes-section") {
-            recipesArray = myRecipes.filter((recipe) => recipe.completed);
-            targetSectionContainer = completedRecipesContainer;
-            radioSelectionHandler(event, targetSectionContainer, recipesArray);
-          } else if (currentSectionId === "my-recipe-cards-section") {
-            recipesArray = myRecipes.filter((recipe) => !recipe.completed);
-            targetSectionContainer = myRecipesContainer;
-            radioSelectionHandler(event, targetSectionContainer, recipesArray);
+          if (!recipeExists) {
+            allRecipes.push(onlineRecipe);
           }
         });
-      });
 
-      // calorie slider
-      /*    const currentValue = calorieSlider.value;
-      console.log(currentValue);
-      calorieSlider.addEventListener("input", (event) => {
+        console.log(`Final online + local results:`, allRecipes.length);
+        return allRecipes;
+      } catch (error) {
+        // console.log(`Error combining results:`, error);
+        console.log(`Only local results:`, localResults.length);
+        // if online fails, just return local search results
+        return localResults;
+      }
+    };
+
+    // SEARCH INPUT EVENT
+    // Try online first, fallback to local if online fails
+    searchForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      showSection("all-cards-section");
+
+      const searchTerm = searchInput.value.trim();
+      if (!searchTerm) {
+        allCardsContainer.textContent = `Search cannot be empty.`;
+        return;
+      }
+      allCardsContainer.textContent = `Searching for ${searchTerm} recipes...`;
+
+      // gets combined local+online results via searchHandler()
+      allRecipes = await searchHandler(searchTerm);
+      // allCardsContainer.textContent = `Found ${recipes.length} recipes for ${searchTerm}`;
+
+      // Show results
+      allCardsContainer.replaceChildren();
+      if (allRecipes.length > 0) {
+        showAllCards(allRecipes, allCardsContainer);
+      }
+    });
+
+    // HOME link
+    homeLink.addEventListener("click", function (event) {
+      event.preventDefault();
+      showSection("welcome-section");
+    });
+
+    // ALL RECIPES link
+    allRecipesLink.addEventListener("click", function (event) {
+      event.preventDefault();
+      showSection("all-cards-section");
+
+      if (allRecipes.length === 0) {
+        allCardsContainer.textContent = "Discover recipes by searching.";
+      } else {
+        showAllCards(allRecipes, allCardsContainer);
+      }
+    });
+
+    // RANDOM RECIPE link
+    randomRecipeLink.addEventListener("click", function (event) {
+      event.preventDefault();
+      showSection("random-recipe-section");
+      showAllCards([randomizer(allRecipes)], randomRecipeContainer);
+    });
+
+    // MY RECIPES link
+    myRecipesLink.addEventListener("click", (event) => {
+      event.preventDefault();
+      showSection("my-recipe-cards-section");
+      showAllCards(incompleteRecipes, myRecipesContainer);
+
+      if (incompleteRecipes.length === 0) {
+        myRecipesContainer.textContent = "Check your completed recipes.";
+      }
+      if (myRecipes.length === 0) {
+        myRecipesContainer.textContent = "No recipes saved";
+      }
+    });
+
+    // COMPLETED RECIPES link
+    completedLink.addEventListener("click", (event) => {
+      event.preventDefault();
+      showSection("completed-recipes-section");
+      showAllCards(completedRecipes, completedRecipesContainer);
+
+      if (completedRecipes.length === 0) {
+        completedRecipesContainer.textContent = "No recipes completed.";
+      }
+    });
+
+    // RADIO BUTTONS event
+    radioButtons.forEach((radio) => {
+      radio.addEventListener("change", (event) => {
+        if (currentSectionId === "all-cards-section") {
+          radioSelectionHandler(event, allCardsContainer, allRecipes);
+        } else if (currentSectionId === "completed-recipes-section") {
+          radioSelectionHandler(
+            event,
+            completedRecipesContainer,
+            completedRecipes
+          );
+        } else if (currentSectionId === "my-recipe-cards-section") {
+          radioSelectionHandler(event, myRecipesContainer, incompleteRecipes);
+        }
+      });
+    });
+
+    // all sliders
+    rangeSliders.forEach((slider) => {
+      slider.addEventListener("input", (event) => {
         event.preventDefault();
-        const newValue = calorieSlider.value;
-        // console.log(newValue);
-        const withinCalories = myRecipes
-          .filter((recipe) => !recipe.completed)
-          .filter((recipe) => recipe.caloriesPerServing <= newValue);
-        calorieLabel.textContent = `Calories (${newValue}):`;
-        console.log(withinCalories);
-      }); */
+        const calorieValue = calorieSlider.value;
+        calorieLabel.textContent = `Calories (${calorieValue}):`;
+        const cooktimeValue = cooktimeSlider.value;
+        cooktimeLabel.textContent = `Cooking times in (${cooktimeValue}) mins:`;
+        if (currentSectionId === "all-cards-section") {
+          const withinCaloriesAndTime = filterByCaloriesAndTime(
+            allRecipes,
+            calorieValue,
+            cooktimeValue
+          );
+          showAllCards(withinCaloriesAndTime, allCardsContainer);
+        } else if (currentSectionId === "my-recipe-cards-section") {
+          const withinCaloriesAndTime = filterByCaloriesAndTime(
+            incompleteRecipes,
+            calorieValue,
+            cooktimeValue
+          );
+          showAllCards(withinCaloriesAndTime, myRecipesContainer);
+        } else {
+          const withinCaloriesAndTime = filterByCaloriesAndTime(
+            completedRecipes,
+            calorieValue,
+            cooktimeValue
+          );
 
-      // cooktimeSlider.addEventListener("input", (event) => {
-      //   event.preventDefault();
-      //   // cooktimeSlider
-      //   // cooktimeLabel.textContent = `Cooking times in (${minutes}) mins:`;
-      //   console.log(event.target);
-      // });
-
-      // all sliders
-      // works only on myRecipes Section
-      rangeSliders.forEach((slider) => {
-        slider.addEventListener("input", (event) => {
-          event.preventDefault();
-          // console.log(event.target.id);
-          if (event.target.id === "calorie-range") {
-            // console.log("this is calorie range");
-            // const currentValue = calorieSlider.value;
-            // console.log(currentValue);
-            const newValue = calorieSlider.value;
-            // console.log(newValue);
-            const withinCalories = myRecipes
-              .filter((recipe) => !recipe.completed)
-              .filter((recipe) => recipe.caloriesPerServing <= newValue);
-            calorieLabel.textContent = `Calories (${newValue}):`;
-            // console.log(withinCalories);
-            showAllCards(withinCalories, myRecipesContainer);
-          }
-          // (event.target.id === 'cooktime-range')
-          else {
-            // console.log("this is cooking time range");
-            // const currentValue = cooktimeSlider.value;
-            // console.log(currentValue);
-            const newValue = cooktimeSlider.value;
-            cooktimeLabel.textContent = `Cooking times in (${newValue}) mins:`;
-            const withinMinutes = myRecipes
-              .filter((recipe) => !recipe.completed)
-              .filter((recipe) => recipe.cookTimeMinutes <= newValue);
-            calorieLabel.textContent = `Calories (${newValue}):`;
-            // console.log(withinMinutes);
-            showAllCards(withinMinutes, myRecipesContainer);
-          }
-        });
+          showAllCards(withinCaloriesAndTime, completedRecipesContainer);
+        }
       });
-    } catch (error) {
-      console.error("Failed to run the program: ", error);
-    }
+    });
   };
 
   mainProgram();
