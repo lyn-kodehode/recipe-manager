@@ -1,26 +1,29 @@
 ## Project Title
 
-Use a clear and descriptive title for your project.
+Recipe Manager
 
 ## Project Description
 
-Provide a brief overview of what the project does and its main goal.
-Explain why you created it (e.g., for a course, to learn a technology, personal interest).
+The Recipe Manager allows the user to go through a collection of recipes. The user is able to sort and filter the results received from searching. The ability to save, print, delete, and mark the recipes as complete are also available.
+
+This project was created to showcase usage of Local Storage, DOM manipulation, and fetching JSON data saved locally and/or through an API request.
 
 ## Technologies Used
 
-List the programming languages, frameworks, libraries, and other tools utilized in the project.
+Used HTML, CSS, and JavaScript
 
 ## How to Install and Run:
 
-Provide step-by-step instructions on how to set up the project locally.
-Include any necessary dependencies and how to install them.
-Explain how to run the application or execute the code.
+Clicking the GitHub pages link automatically starts up the project.
 
 ## How to Use:
 
-Describe how a user can interact with your project.
-Provide examples or screenshots if helpful.
+The user is welcomed by a dashboard showing the number of saved and completed recipes.
+![Recipe manager dashboard image](./assets/dashboard.png)
+
+The user can visit the "My Recipes' link to view all incomplete recipes saved in the browser's local storage if there's any.
+Once a recipe is marked completed, it moves to the 'Completed Recipes' link.
+The user can also browse recipes by clicking 'All Recipes' or doscover more by using the search field.
 
 ## Credits/Acknowledgments (Optional but Recommended):
 
