@@ -1,0 +1,8 @@
+@media (max-width<25vw) {
+  .logo {
+    font-size: 56px;
+  }
+  .logo-icon {
+    height: 56px;
+  }
+}
