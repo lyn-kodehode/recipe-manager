@@ -12,11 +12,11 @@ This project was created to showcase usage of Local Storage, DOM manipulation, a
 
 Used HTML, CSS, and JavaScript
 
-## How to Install and Run:
+## How to Install and Run
 
 Clicking the GitHub pages link automatically starts up the project.
 
-## How to Use:
+## How to Use
 
 The user is welcomed by a dashboard showing the number of saved and completed recipes.
 ![Recipe manager dashboard image](./assets/dashboard.png)
@@ -27,12 +27,12 @@ Once a recipe is marked completed, it moves to the 'Completed Recipes' link.
 The user can also browse recipes by clicking 'All Recipes' or doscover more by using the search field.
 ![recipe cards image](./assets/allrecipes.png)
 
-## Credits/Acknowledgments (Optional but Recommended):
+## Credits/Acknowledgments
 
 Iconixar for the chef icon.
 Unsplash for background images.
 TheMealDB.com for free recipe API and database
 
-## License (Optional but Recommended):
+## License
 
 IT-Utvikler AMO/Kodehode
