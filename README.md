@@ -35,4 +35,4 @@ TheMealDB.com for free recipe API and database
 
 ## License (Optional but Recommended):
 
-Indicate the license under which your project is distributed (e.g., MIT, Apache 2.0).
+IT-Utvikler AMO/Kodehode
