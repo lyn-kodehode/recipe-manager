@@ -8,26 +8,38 @@
   padding: 0;
   box-sizing: border-box;
 }
+/* Fixed header */
 header {
   height: 8vh;
   flex-direction: column;
-  position: relative;
-  /* position: fixed; */
+  /* position: relative; */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
   background-image: url("./assets/istockphoto-683041906-2048x2048.jpg");
   background-size: cover;
   background-repeat: no-repeat;
-  /* background-position: center; */
   background-position: 10% 25%;
   width: 100vw;
 }
+/* Adjust main container to account for fixed elements */
 #main-container {
   display: flex;
+  margin-top: 8vh; /* Account for fixed header */
+  padding-left: 25vw; /* Account for fixed sidebar */
+  position: relative;
 }
+
 main {
   position: relative;
   display: flex;
   flex-direction: column;
-  /* width: 70vw; */
+  width: 990px;
+  /* Use remaining width */
+  width: 75vw;
+  min-height: calc(100vh - 8vh); /* Ensure main content area is full height */
 }
 h1 {
   font-size: 3rem;
@@ -68,11 +80,19 @@ h4 {
   font-size: 1.5rem;
   font-family: var(--primary-font-style);
 }
-
+/* fixed nav */
 nav {
   justify-content: center;
   /* position: sticky; */
+  position: sticky;
+  /* Stick to the top of the main content area */
+  /* top: 0; */
+  top: 8vh;
   padding: 1rem;
+  z-index: 100;
+  background-color: rgba(255, 255, 255, 0.95); /* Semi-transparent background */
+  backdrop-filter: blur(10px); /* Optional: adds a nice blur effect */
+  border-bottom: 1px solid rgba(253, 192, 78, 0.3); /* Optional: subtle border */
 }
 nav ul {
   display: flex;
@@ -102,15 +122,20 @@ nav a:hover {
 nav a:active {
   color: rgba(255, 45, 45, 0.831);
 }
+/* Fixed sidebar */
 aside {
+  /* min-height: 92vh; */
+  /* height: calc(100vh - 8vh); */
+  height: 100%;
+  position: fixed;
+  top: 8vh;
+  left: 0;
+  width: 25vw;
+  /* width: 450px; */
   background-color: beige;
-  /* height: 100%; */
-  min-height: 92vh;
-  /* width: 30vw; */
   display: flex;
   flex-direction: column;
-  /* gap: 2rem; */
-  position: sticky;
+  z-index: 500;
 }
 aside * {
   /* border: solid black 0.01rem; */
@@ -126,7 +151,9 @@ aside * {
 .logo-div {
   padding: 1rem;
   height: auto;
-  position: relative;
+  /* position: relative; */
+  /* width: 450px; */
+  width: 25vw;
   /* background-color: #fdc04eaa; */
 }
 .logo-icon {
@@ -194,6 +221,7 @@ input[type="range"] {
 #welcome-section {
   margin-top: 4vh;
   width: 75vw;
+  /* width: 990px; */
   margin-left: 2vw;
 }
 
@@ -331,7 +359,6 @@ input[type="range"] {
   background-color: #b18637;
   color: #e6e6e6;
 }
-
 .buttons-div {
   display: flex;
   gap: 2rem;
@@ -347,6 +374,7 @@ input[type="range"] {
   align-content: center;
   margin-top: 15vh;
   width: 75vw;
+  /* width: 990px; */
   margin-left: 2vw;
 }
 .recipe-card {
