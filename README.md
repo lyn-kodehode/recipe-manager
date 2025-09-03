@@ -22,12 +22,16 @@ The user is welcomed by a dashboard showing the number of saved and completed re
 ![Recipe manager dashboard image](./assets/dashboard.png)
 
 The user can visit the "My Recipes' link to view all incomplete recipes saved in the browser's local storage if there's any.
+![full recipe image](./assets/fullrecipe.png)
 Once a recipe is marked completed, it moves to the 'Completed Recipes' link.
 The user can also browse recipes by clicking 'All Recipes' or doscover more by using the search field.
+![recipe cards image](./assets/allrecipes.png)
 
 ## Credits/Acknowledgments (Optional but Recommended):
 
-If you received help from others or used external resources, acknowledge them here.
+Iconixar for the chef icon.
+Unsplash for background images.
+TheMealDB.com for free recipe API and database
 
 ## License (Optional but Recommended):
 
