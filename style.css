@@ -36,7 +36,7 @@ main {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 990px;
+  /* width: 990px; */
   /* Use remaining width */
   width: 75vw;
   min-height: calc(100vh - 8vh); /* Ensure main content area is full height */
@@ -61,8 +61,7 @@ section {
   /* width: 75vw;
   margin-left: 2vw; */
 }
-/* #full-recipes-section {
-} */
+
 /* #random-recipe-section {
 } */
 /* #my-recipe-cards-section {
@@ -222,7 +221,8 @@ input[type="range"] {
   margin-top: 4vh;
   width: 75vw;
   /* width: 990px; */
-  margin-left: 2vw;
+  /* margin-left: 2vw; */
+  padding: 2rem;
 }
 
 #main-container::before {
@@ -345,8 +345,18 @@ input[type="range"] {
   font-size: 1rem;
   transition: all 0.3s ease-in-out;
 }
+.delete-btn {
+  background-color: #ff9999;
+}
+.delete-btn:hover {
+  transform: scale(1.1);
+  /* background-color: #fdc04eaa; */
+  /* background-color: #ff4d4d; */
+  background-color: #ffcccc;
+  color: black;
+}
 .save-btn:hover,
-.delete-btn:hover,
+/* .delete-btn:hover, */
 .print-btn:hover,
 .close-btn:hover {
   transform: scale(1.1);
@@ -363,6 +373,9 @@ input[type="range"] {
   display: flex;
   gap: 2rem;
 }
+#full-recipes-section {
+  padding: 2rem;
+}
 #all-cards-section,
 #my-recipe-cards-section,
 #random-recipe-section,
@@ -375,7 +388,12 @@ input[type="range"] {
   margin-top: 15vh;
   width: 75vw;
   /* width: 990px; */
-  margin-left: 2vw;
+  /* margin-left: 2vw; */
+  padding: 2rem;
+  /* min-width: 0; */
+  /*  */
+  /* overflow-x: hidden; */
+  /*  */
 }
 .recipe-card {
   position: relative;

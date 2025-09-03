@@ -14,7 +14,6 @@ import {
 import { loadMyData, saveMyRecipes } from "./modules/storageService.js";
 import { getRecipesOnline, transformRecipes } from "./modules/apiService.js";
 
-// **************************************************
 // SHOW REAL DATE/TIME
 const showDateTime = () => {
   const now = new Date();
@@ -32,7 +31,7 @@ const showDateTime = () => {
 };
 setInterval(showDateTime, 1000);
 showDateTime();
-// **************************************************
+
 // DOM CONTENT LOADS
 document.addEventListener("DOMContentLoaded", () => {
   const allSections = document.querySelectorAll("section");
@@ -65,8 +64,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let allRecipes = [];
   let completedRecipes = [];
   let incompleteRecipes = [];
-  // let completedRecipes = filterCompleted(myRecipes);
-  // let incompleteRecipes = filterIncomplete(myRecipes);
 
   // SECTION TRACKER FUNCTION
   let currentSectionId = "welcome-section";
@@ -121,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // CLOSE RECIPE BUTTON
+  // // CLOSE RECIPE BUTTON
   const closeRecipeButton = () => {
     const closeBtn = document.createElement("button");
     closeBtn.classList.add("close-btn");
@@ -365,7 +362,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return recipeCard;
   };
 
-  // ALL CARDS SECTION
   // DISPLAYS ALL RECIPE CARDS
   const showAllCards = (recipesArray, targetSectionContainer) => {
     targetSectionContainer.replaceChildren();
