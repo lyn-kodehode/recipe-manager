@@ -202,6 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.checked = recipe.completed;
+    checkbox.dataset.tooltip = "Mark as completed";
     checkbox.addEventListener("change", () => {
       recipe.completed = checkbox.checked;
       saveMyRecipes(myRecipes);
